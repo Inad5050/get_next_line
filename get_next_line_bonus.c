@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dangonz3 <dangonz3@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 15:49:57 by dangonz3          #+#    #+#             */
-/*   Updated: 2024/06/04 19:08:04 by dangonz3         ###   ########.fr       */
+/*   Updated: 2024/06/04 19:19:42 by dangonz3         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
-	static char	*line;
+	static char	*line[4096];
 	char		buffer[BUFFER_SIZE +1];
 	int			readbytes;
 	char		*return_line;
@@ -22,18 +22,18 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	readbytes = 1;
-	while (!ft_strchr(line, '\n') && readbytes > 0)
+	while (!ft_strchr(line[fd], '\n') && readbytes > 0)
 	{
 		readbytes = read(fd, buffer, BUFFER_SIZE);
 		if (readbytes == -1)
 			return (NULL);
 		buffer[readbytes] = '\0';
-		line = ft_gnl_strjoin(line, buffer);
-		if (!line)
+		line[fd] = ft_gnl_strjoin(line[fd], buffer);
+		if (!line[fd])
 			return (NULL);
 	}
-	return_line = cut_line(line);
-	line = excess(line);
+	return_line = cut_line(line[fd]);
+	line[fd] = excess(line[fd]);
 	return (return_line);
 }
 
